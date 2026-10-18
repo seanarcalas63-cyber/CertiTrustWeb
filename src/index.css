@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+.verified {
+    @apply inline-flex items-center min-h-[26px] px-2.5 gap-1.5 rounded-full text-xs font-extrabold bg-[#DCFCE7] text-[#15803D];
+}
+
+.pending {
+    @apply inline-flex items-center min-h-[26px] px-2.5 gap-1.5 rounded-full text-xs font-extrabold bg-[#FEF3C7] text-[#B45309];
+}
+
+.hide-scrollbar {
+    scrollbar-width: none;
+}
