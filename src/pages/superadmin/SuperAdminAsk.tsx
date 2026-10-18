@@ -1,222 +1,225 @@
-import { Link, useLocation } from "react-router-dom";
+import { useMemo, useState } from "react";
+import SuperAdminSideBar from "../../components/SuperAdminSideBar";
+
+type Conversation = {
+    id: string;
+    name: string;
+    subtitle: string;
+    extra?: string;
+    preview: string;
+    lastActive: string;
+    unread?: number;
+    type: "school" | "student";
+    avatarText?: string;
+    avatarBg?: string;
+    avatarColor?: string;
+    avatarSrc?: string; // optional: put the school logo path here, e.g. "/ucu.png"
+};
+
+const conversations: Conversation[] = [
+    {
+        id: "1",
+        name: "UCU",
+        subtitle: "School administrator",
+        preview: "You: Deletion request fo…",
+        lastActive: "Last active: 2 days ago",
+        type: "school",
+        avatarText: "UCU",
+        avatarBg: "#FDECB3",
+        avatarColor: "#9A3412",
+    },
+    {
+        id: "2",
+        name: "PSU",
+        subtitle: "School administrator",
+        preview: "unfreeze me now",
+        lastActive: "Last active: 6 hours ago",
+        type: "school",
+        avatarText: "PSU",
+        avatarBg: "#DCE8FA",
+        avatarColor: "#0A3A6B",
+    },
+    {
+        id: "3",
+        name: "PsuUser T. Student",
+        subtitle: "Student report",
+        extra: "Student ID: 20260002",
+        preview: "You: hello",
+        lastActive: "Last active: 2 days ago",
+        unread: 1,
+        type: "student",
+    },
+];
 
 export default function SuperAdminAsk() {
-    const location = useLocation();
+    const [search, setSearch] = useState("");
 
-    const menuItems = [
-        { name: "Home", path: "/superadmin", icon: "⌂" },
-        { name: "Records", path: "/superadmin/records", icon: "▤" },
-        { name: "Verify", path: "/superadmin/verify", icon: "✓" },
-        { name: "Ask", path: "/superadmin/ask", icon: "?" },
-    ];
+    const filtered = useMemo(() => {
+        const q = search.trim().toLowerCase();
+
+        if (q === "") return conversations;
+
+        return conversations.filter((c) =>
+            [c.name, c.subtitle, c.extra ?? "", c.preview]
+                .join(" ")
+                .toLowerCase()
+                .includes(q)
+        );
+    }, [search]);
 
     return (
         <div className="min-h-screen bg-[#F5F7FB] flex">
 
             {/* SIDEBAR */}
-            <aside className="w-[260px] bg-[#071426] text-white min-h-screen flex flex-col">
-
-                {/* LOGO */}
-                <div className="px-5 pt-5">
-                    <Link to="/superadmin" className="flex items-center gap-3">
-                        <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center overflow-hidden">
-                            <img
-                                src="/logo.png"
-                                alt="CertiTrust logo"
-                                className="w-11 h-11 object-contain"
-                            />
-                        </div>
-
-                        <div>
-                            <span className="block text-white font-extrabold text-lg">
-                                CertiTrust
-                            </span>
-
-                            <span className="block text-white/40 text-[10px] font-bold uppercase tracking-widest">
-                                Super Admin
-                            </span>
-                        </div>
-                    </Link>
-                </div>
-
-                <div className="mx-5 mt-6 border-t border-white/10" />
-
-                {/* MENU */}
-                <nav className="flex-1 px-3.5 mt-6">
-                    <div className="grid gap-2">
-
-                        {menuItems.map((item) => {
-                            const isActive =
-                                location.pathname === item.path;
-
-                            return (
-                                <Link
-                                    key={item.path}
-                                    to={item.path}
-                                    className={`relative min-h-11 flex items-center gap-3 px-3.5 rounded-xl font-semibold transition-all ${
-                                        isActive
-                                            ? "bg-white text-[#0A192F] shadow-lg"
-                                            : "text-white/60 hover:text-white hover:bg-white/[0.07]"
-                                    }`}
-                                >
-
-                                    {isActive && (
-                                        <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#2563EB]" />
-                                    )}
-
-                                    <span
-                                        className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold ${
-                                            isActive
-                                                ? "bg-[#EAF2FF] text-[#1D4ED8]"
-                                                : "bg-white/[0.05] text-white/50"
-                                        }`}
-                                    >
-                                        {item.icon}
-                                    </span>
-
-                                    <span className="text-sm">
-                                        {item.name}
-                                    </span>
-
-                                </Link>
-                            );
-                        })}
-
-                    </div>
-                </nav>
-
-                {/* LOGOUT */}
-                <div className="px-3.5 pb-5">
-                    <Link
-                        to="/login"
-                        className="min-h-11 w-full flex items-center gap-3 px-3.5 rounded-xl text-white/55 hover:text-white hover:bg-red-500/10 transition-all"
-                    >
-                        <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/[0.05]">
-                            ↪
-                        </span>
-
-                        <span className="text-sm font-semibold">
-                            Logout
-                        </span>
-                    </Link>
-                </div>
-
-            </aside>
+            <SuperAdminSideBar />
 
             {/* MAIN CONTENT */}
-            <main className="flex-1 p-6 md:p-10">
+            <main className="flex-1 h-screen overflow-y-auto min-w-0 p-6 md:p-10">
 
-                {/* HEADER */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-extrabold text-[#0A192F]">
-                        Ask & Support
+                <div className="max-w-3xl mx-auto">
+
+                    {/* HEADER */}
+                    <h1 className="text-3xl font-extrabold text-[#0A192F] mb-8">
+                        Messages
                     </h1>
 
-                    <p className="text-gray-500 mt-1">
-                        Manage questions and support requests from subadmins.
-                    </p>
-                </div>
+                    {/* SEARCH */}
+                    <div className="relative mb-6">
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600">
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="11" cy="11" r="7" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg>
+                        </span>
 
-                {/* CONTENT */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    {/* QUESTIONS */}
-                    <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-
-                        <div className="flex items-center justify-between mb-6">
-                            <div>
-                                <h2 className="text-lg font-bold text-[#0A192F]">
-                                    Questions & Requests
-                                </h2>
-
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Review questions submitted by subadmins.
-                                </p>
-                            </div>
-
-                            <span className="px-3 py-1 rounded-full bg-[#EAF2FF] text-[#2563EB] text-xs font-bold">
-                                3 New
-                            </span>
-                        </div>
-
-                        {/* QUESTION 1 */}
-                        <div className="border border-gray-100 rounded-xl p-4 mb-3 hover:border-blue-200 transition">
-                            <div className="flex justify-between gap-4">
-                                <div>
-                                    <h3 className="font-bold text-[#0A192F]">
-                                        How can I verify a credential?
-                                    </h3>
-
-                                    <p className="text-sm text-gray-500 mt-1">
-                                        Submitted by University Subadmin
-                                    </p>
-                                </div>
-
-                                <button className="text-sm font-semibold text-[#2563EB]">
-                                    View
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* QUESTION 2 */}
-                        <div className="border border-gray-100 rounded-xl p-4 mb-3 hover:border-blue-200 transition">
-                            <div className="flex justify-between gap-4">
-                                <div>
-                                    <h3 className="font-bold text-[#0A192F]">
-                                        Request to update university records
-                                    </h3>
-
-                                    <p className="text-sm text-gray-500 mt-1">
-                                        Submitted by Registrar Subadmin
-                                    </p>
-                                </div>
-
-                                <button className="text-sm font-semibold text-[#2563EB]">
-                                    View
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* QUESTION 3 */}
-                        <div className="border border-gray-100 rounded-xl p-4 hover:border-blue-200 transition">
-                            <div className="flex justify-between gap-4">
-                                <div>
-                                    <h3 className="font-bold text-[#0A192F]">
-                                        Credential deletion request
-                                    </h3>
-
-                                    <p className="text-sm text-gray-500 mt-1">
-                                        Submitted by Records Administrator
-                                    </p>
-                                </div>
-
-                                <button className="text-sm font-semibold text-[#2563EB]">
-                                    View
-                                </button>
-                            </div>
-                        </div>
-
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Search people or credentials"
+                            className="w-full pl-14 pr-4 py-4 bg-white rounded-xl border border-gray-400 text-[#0A192F] placeholder-gray-500 outline-none focus:border-[#0A3A6B] focus:ring-2 focus:ring-blue-100 transition-all"
+                        />
                     </div>
 
-                    {/* SUPPORT CARD */}
-                    <div className="bg-[#0A192F] rounded-2xl p-6 text-white h-fit">
+                    {/* CONVERSATIONS */}
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-                        <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-xl mb-5">
-                            ?
-                        </div>
+                        {filtered.map((c, index) => (
+                            <div
+                                key={c.id}
+                                className={`flex items-center gap-5 px-6 py-6 hover:bg-gray-50 transition-colors cursor-pointer ${index !== filtered.length - 1
+                                        ? "border-b border-gray-200"
+                                        : ""
+                                    }`}
+                            >
 
-                        <h2 className="text-xl font-bold">
-                            Super Admin Support
-                        </h2>
+                                {/* AVATAR */}
+                                <div
+                                    className="w-14 h-14 rounded-full shrink-0 flex items-center justify-center overflow-hidden"
+                                    style={{
+                                        backgroundColor:
+                                            c.type === "student" ? "#DCE8FA" : c.avatarBg,
+                                        color:
+                                            c.type === "student" ? "#0A3A6B" : c.avatarColor,
+                                    }}
+                                >
+                                    {c.avatarSrc ? (
+                                        <img
+                                            src={c.avatarSrc}
+                                            alt={c.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : c.type === "student" ? (
+                                        <svg
+                                            width="30"
+                                            height="30"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        >
+                                            <path d="M4 12a8 8 0 0 1 16 0v1a7 7 0 0 1-7 7h-2a7 7 0 0 1-7-7v-1z" />
+                                            <circle cx="9" cy="13" r="0.6" fill="currentColor" />
+                                            <circle cx="15" cy="13" r="0.6" fill="currentColor" />
+                                        </svg>
+                                    ) : (
+                                        <span className="text-sm font-extrabold">
+                                            {c.avatarText}
+                                        </span>
+                                    )}
+                                </div>
 
-                        <p className="text-white/60 text-sm mt-2 leading-6">
-                            Review concerns, answer questions, and assist
-                            registered university administrators.
-                        </p>
+                                {/* TEXT */}
+                                <div className="flex-1 min-w-0">
 
-                        <button className="mt-6 w-full bg-white text-[#0A192F] py-3 rounded-xl font-bold hover:bg-gray-100 transition">
-                            Open Support Center
-                        </button>
+                                    <p className="text-lg font-semibold text-[#0A192F] truncate">
+                                        {c.name}
+                                    </p>
+
+                                    <p className="text-[15px] text-gray-600 mt-0.5">
+                                        {c.subtitle}
+                                    </p>
+
+                                    {c.extra && (
+                                        <p className="text-[15px] text-gray-600">
+                                            {c.extra}
+                                        </p>
+                                    )}
+
+                                    <p
+                                        className={`text-[15px] truncate ${c.unread
+                                                ? "font-bold text-[#0A192F]"
+                                                : "text-gray-400"
+                                            }`}
+                                    >
+                                        {c.preview}
+                                    </p>
+
+                                    <p className="text-sm text-gray-400 mt-0.5">
+                                        {c.lastActive}
+                                    </p>
+
+                                </div>
+
+                                {/* UNREAD */}
+                                {c.unread ? (
+                                    <span className="w-8 h-8 rounded-full bg-[#0A3A6B] text-white text-sm font-bold flex items-center justify-center shrink-0">
+                                        {c.unread}
+                                    </span>
+                                ) : null}
+
+                                {/* MENU */}
+                                <button
+                                    type="button"
+                                    aria-label="More options"
+                                    className="p-2 rounded-lg text-gray-600 hover:bg-gray-200/70 transition-colors shrink-0"
+                                >
+                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="5" cy="12" r="2" />
+                                        <circle cx="12" cy="12" r="2" />
+                                        <circle cx="19" cy="12" r="2" />
+                                    </svg>
+                                </button>
+
+                            </div>
+                        ))}
+
+                        {filtered.length === 0 && (
+                            <div className="px-6 py-10 text-center text-gray-500">
+                                No results found.
+                            </div>
+                        )}
 
                     </div>
 

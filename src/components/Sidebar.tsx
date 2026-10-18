@@ -5,7 +5,7 @@ export default function Sidebar() {
 
     const menuItems = [
         { name: "Dashboard", path: "/admin-dashboard", icon: "⌂" },
-        { name: "Academic Records", path: "/records", icon: "▤" },
+        { name: "Academic Records", path: "/superadmin/records", icon: "▤" },
         { name: "Inbox", path: "/inbox", icon: "todo" },
         { name: "Certificates", path: "/certificates", icon: "▣" },
         { name: "Students", path: "/students", icon: "♙" },

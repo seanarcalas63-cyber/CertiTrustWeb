@@ -1,98 +1,13 @@
-import { Link } from "react-router-dom";
+import SuperAdminSideBar from "../../components/SuperAdminSideBar";
 
 export default function SuperAdminLogs() {
     return (
         <div className="min-h-screen bg-[#F5F7FB] flex">
 
-            {/* SIDEBAR */}
-            <aside className="w-[280px] min-h-screen bg-[#071426] text-white p-5">
-
-                <div className="flex items-center gap-3 mb-8">
-
-                    <div className="w-11 h-11 bg-white rounded-xl overflow-hidden">
-                        <img
-                            src="/logo.png"
-                            alt="CertiTrust"
-                            className="w-full h-full object-contain"
-                        />
-                    </div>
-
-                    <div>
-                        <p className="font-extrabold text-lg">
-                            CertiTrust
-                        </p>
-
-                        <p className="text-[10px] text-white/40 uppercase tracking-widest">
-                            Super Admin Console
-                        </p>
-                    </div>
-
-                </div>
-
-                {/* NAVIGATION */}
-                <nav className="space-y-2">
-
-                    <Link
-                        to="/superadmin"
-                        className="block px-4 py-3 rounded-xl text-white/60 hover:bg-white/10"
-                    >
-                        ⌂ Dashboard
-                    </Link>
-
-                    <Link
-                        to="/superadmin/create-subadmin"
-                        className="block px-4 py-3 rounded-xl text-white/60 hover:bg-white/10"
-                    >
-                        + Create Subadmin Account
-                    </Link>
-
-                    <Link
-                        to="/superadmin/logs"
-                        className="block px-4 py-3 rounded-xl bg-white text-[#071426] font-semibold"
-                    >
-                        EQ Global Credential Logs
-                    </Link>
-
-                    <Link
-                        to="/superadmin/records"
-                        className="block px-4 py-3 rounded-xl text-white/60 hover:bg-white/10"
-                    >
-                        ▤ Records
-                    </Link>
-
-                    <Link
-                        to="/superadmin/verify"
-                        className="block px-4 py-3 rounded-xl text-white/60 hover:bg-white/10"
-                    >
-                        ✓ Verify
-                    </Link>
-
-                    <Link
-                        to="/superadmin/ask"
-                        className="block px-4 py-3 rounded-xl text-white/60 hover:bg-white/10"
-                    >
-                        ? Ask
-                    </Link>
-
-                </nav>
-
-                {/* LOGOUT */}
-                <div className="mt-10 border-t border-white/10 pt-5">
-
-                    <Link
-                        to="/login"
-                        className="block px-4 py-3 rounded-xl text-white/60 hover:bg-red-500/10"
-                    >
-                        ↪ Logout
-                    </Link>
-
-                </div>
-
-            </aside>
-
+            <SuperAdminSideBar />
 
             {/* MAIN CONTENT */}
-            <main className="flex-1 p-8">
+            <main className="flex-1 overflow-y-auto h-screen p-8">
 
                 <h1 className="text-3xl font-extrabold text-[#071426]">
                     Global Credential Logs

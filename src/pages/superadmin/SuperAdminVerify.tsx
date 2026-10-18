@@ -1,116 +1,31 @@
-import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import SuperAdminSideBar from "../../components/SuperAdminSideBar";
 
 export default function SuperAdminVerify() {
-  const location = useLocation();
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
 
-  const menuItems = [
-    { name: "Home", path: "/superadmin", icon: "⌂" },
-    { name: "Records", path: "/superadmin/records", icon: "▤" },
-    { name: "Verify", path: "/superadmin/verify", icon: "✓" },
-    { name: "Ask", path: "/superadmin/ask", icon: "?" },
-  ];
+  const handleVerify = () => {
+    const value = code.trim();
+
+    if (value === "") {
+      setError("Please enter a certificate code.");
+      return;
+    }
+
+    setError("");
+
+    // TODO: connect to your verification API / blockchain lookup here
+    console.log("Verify certificate code:", value);
+  };
 
   return (
-    <div className="min-h-screen bg-[#F5F8FC]">
+    <div className="min-h-screen flex bg-[#F5F8FC]">
 
-      {/* SIDEBAR */}
-      <aside className="fixed left-0 top-0 bottom-0 w-[260px] bg-[#071426] text-white flex flex-col">
-
-        {/* LOGO */}
-        <div className="px-5 pt-5">
-          <Link to="/superadmin" className="flex items-center gap-3">
-            <div className="w-11 h-11 flex items-center justify-center bg-white rounded-xl overflow-hidden shadow-lg">
-              <img
-                src="/logo.png"
-                alt="CertiTrust"
-                className="w-11 h-11 object-contain"
-              />
-            </div>
-
-            <div>
-              <span className="block text-white font-extrabold text-lg">
-                CertiTrust
-              </span>
-
-              <span className="block text-white/40 text-[10px] font-bold uppercase tracking-wider">
-                Super Admin
-              </span>
-            </div>
-          </Link>
-        </div>
-
-        <div className="mx-5 mt-6 border-t border-white/10" />
-
-        {/* MENU */}
-        <nav className="flex-1 px-3.5 mt-6">
-          <div className="space-y-1.5">
-
-            {menuItems.map((item) => {
-              const active = location.pathname === item.path;
-
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`relative flex items-center gap-3 min-h-11 px-3.5 rounded-xl transition-all duration-300 ${
-                    active
-                      ? "bg-white text-[#0A192F] shadow-lg"
-                      : "text-white/60 hover:text-white hover:bg-white/[0.07]"
-                  }`}
-                >
-
-                  {active && (
-                    <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#2563EB]" />
-                  )}
-
-                  <span
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg font-bold ${
-                      active
-                        ? "bg-[#EAF2FF] text-[#1D4ED8]"
-                        : "bg-white/[0.05] text-white/50"
-                    }`}
-                  >
-                    {item.icon}
-                  </span>
-
-                  <span className="text-sm font-semibold">
-                    {item.name}
-                  </span>
-
-                </Link>
-              );
-            })}
-
-          </div>
-        </nav>
-
-        {/* STATUS */}
-        <div className="px-3.5 pb-5">
-          <div className="p-3.5 rounded-xl bg-white/[0.05] border border-white/[0.08]">
-
-            <div className="flex items-center gap-2.5">
-
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-
-              <div>
-                <p className="text-xs font-bold text-white/80">
-                  System Online
-                </p>
-
-                <p className="text-[10px] text-white/35">
-                  All services operational
-                </p>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-      </aside>
+      <SuperAdminSideBar />
 
       {/* MAIN CONTENT */}
-      <main className="ml-[260px] min-h-screen p-8">
+      <main className="min-w-0 mx-auto overflow-y-auto h-screen p-8">
 
         {/* HEADER */}
         <div className="mb-8">
@@ -120,7 +35,7 @@ export default function SuperAdminVerify() {
           </p>
 
           <h1 className="text-3xl font-extrabold text-[#0A192F]">
-            Credential Verification
+            Certificate Verification
           </h1>
 
           <p className="text-gray-500 mt-2">
@@ -129,85 +44,144 @@ export default function SuperAdminVerify() {
 
         </div>
 
-        {/* VERIFY CARD */}
-        <div className="max-w-3xl bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <div className="max-w-2xl">
 
-          <h2 className="text-lg font-bold text-[#0A192F] mb-2">
-            Verify a Credential
-          </h2>
+          {/* INFO BANNER */}
+          <div className="flex items-center gap-6 bg-[#EAEFF7] border border-[#C9D5E6] rounded-3xl px-8 py-7 mb-10">
 
-          <p className="text-sm text-gray-500 mb-6">
-            Enter a credential ID or hash to check its authenticity.
-          </p>
+            <span className="text-[#0A3A6B] shrink-0">
+              <svg
+                width="44"
+                height="44"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect
+                  x="11"
+                  y="3"
+                  width="10"
+                  height="5"
+                  rx="1"
+                  transform="rotate(45 16 5.5)"
+                />
+                <line x1="13" y1="11" x2="4" y2="20" />
+                <line x1="3" y1="21.5" x2="11" y2="21.5" />
+              </svg>
+            </span>
 
-          {/* INPUT */}
-          <div className="mb-5">
-
-            <label className="block text-sm font-semibold text-[#0A192F] mb-2">
-              Credential ID
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter credential ID"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-blue-100 transition-all duration-300"
-            />
-
-          </div>
-
-          {/* HASH */}
-          <div className="mb-6">
-
-            <label className="block text-sm font-semibold text-[#0A192F] mb-2">
-              Credential Hash
-            </label>
-
-            <input
-              type="text"
-              placeholder="Enter credential hash"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-blue-100 transition-all duration-300"
-            />
+            <p className="text-lg font-semibold text-[#0A192F] leading-8">
+              Verify official academic credentials anchored on the Polygon
+              blockchain.
+            </p>
 
           </div>
 
-          {/* BUTTON */}
-          <button
-            type="button"
-            className="px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl font-semibold transition-all duration-300 shadow-sm"
-          >
-            ✓ Verify Credential
-          </button>
+          {/* CODE FIELD */}
+          <div className="relative">
 
-        </div>
+            <label
+              htmlFor="certificate-code"
+              className="absolute -top-3 left-4 px-2 bg-[#F5F8FC] text-sm font-medium text-[#0A3A6B]"
+            >
+              Certificate or shared-degree code
+            </label>
 
-        {/* VERIFICATION STATUS */}
-        <div className="max-w-3xl mt-6 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div
+              className={`flex items-center gap-3 bg-transparent rounded-xl border-2 px-5 py-4 transition-colors ${error ? "border-red-500" : "border-[#0A3A6B]"
+                }`}
+            >
 
-          <h2 className="text-lg font-bold text-[#0A192F]">
-            Verification Result
-          </h2>
+              <input
+                id="certificate-code"
+                type="text"
+                value={code}
+                onChange={(e) => {
+                  setCode(e.target.value);
+                  if (error) setError("");
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleVerify();
+                }}
+                placeholder="Enter a certificate code ..."
+                className="flex-1 min-w-0 bg-transparent outline-none text-lg text-[#0A192F] placeholder-gray-500"
+              />
 
-          <div className="mt-5 p-5 rounded-xl bg-gray-50 border border-gray-100">
+              {/* SCAN */}
+              <button
+                type="button"
+                aria-label="Scan QR code"
+                className="p-2 rounded-lg text-[#333F4F] hover:bg-gray-200/70 transition-colors"
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="13" r="3.5" fill="#F5F8FC" stroke="#F5F8FC" />
+                </svg>
+              </button>
 
-            <div className="flex items-center gap-3">
-
-              <div className="w-10 h-10 rounded-xl bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
-                ✓
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold text-[#0A192F]">
-                  No verification performed
-                </p>
-
-                <p className="text-xs text-gray-400 mt-1">
-                  Enter a credential ID or hash above.
-                </p>
-              </div>
+              {/* SEARCH */}
+              <button
+                type="button"
+                aria-label="Search"
+                onClick={handleVerify}
+                className="p-2 rounded-lg text-[#333F4F] hover:bg-gray-200/70 transition-colors"
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="7" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </button>
 
             </div>
 
+            {error && (
+              <p className="text-sm text-red-600 mt-2 ml-1">{error}</p>
+            )}
+
           </div>
+
+          {/* VERIFY BUTTON */}
+          <button
+            type="button"
+            onClick={handleVerify}
+            className="mt-6 w-full flex items-center justify-center gap-3 py-5 rounded-full bg-[#1B4A75] hover:bg-[#143A5E] text-white text-lg font-semibold shadow-lg shadow-slate-400/40 transition-all duration-300"
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="8 12 11 15 16 9" />
+            </svg>
+            Verify Record
+          </button>
 
         </div>
 
