@@ -1,522 +1,406 @@
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import SuperAdminSideBar from "../../components/SuperAdminSideBar";
 
-export default function SuperAdminDashboard() {
-    const location = useLocation();
+const stats = [
+    { label: "Total Universities", value: 2, icon: "university" },
+    { label: "Total Credentials", value: 2, icon: "medal" },
+    { label: "Verified Credentials", value: 2, icon: "verified" },
+    { label: "Subadmin Accounts", value: 3, icon: "shield" },
+];
 
-    const menuItems = [
-        {
-            name: "Dashboard",
-            path: "/superadmin",
-            icon: "⌂",
-        },
-        {
-            name: "Create Subadmin Account",
-            path: "/superadmin/create-subadmin",
-            icon: "+",
-        },
-        {
-            name: "Global Credential Logs",
-            path: "/superadmin/logs",
-            icon: "EQ",
-        },
-        {
-            name: "Records",
-            path: "/superadmin/records",
-            icon: "▤",
-        },
-        {
-            name: "Verify",
-            path: "/superadmin/verify",
-            icon: "✓",
-        },
-        {
-            name: "Ask",
-            path: "/superadmin/ask",
-            icon: "?",
-        },
-    ];
+const logs = [
+    { credential: "UcuUser T. Student", university: "UCU", date: "2026-10-13" },
+    { credential: "PsuUser T. Student", university: "PSU", date: "2026-10-13" },
+];
+
+const actionHistory = [
+    { action: "Unfroze student account", email: "psuusertest@gmail.com", school: "PSU", time: "2026-10-16 14:00" },
+    { action: "Froze student account", email: "psuusertest@gmail.com", school: "PSU", time: "2026-10-16 13:46" },
+    { action: "Unfroze student account", email: "psuusertest@gmail.com", school: "PSU", time: "2026-10-16 13:43" },
+    { action: "Removed Google binding", email: "psu2026admin@gmail.com", school: "PSU", time: "2026-10-16 12:16" },
+    { action: "Removed Google binding", email: "psu2026admin@gmail.com", school: "PSU", time: "2026-10-16 12:07" },
+    { action: "Deleted student account", email: "psuusertest@gmail.com", school: "PSU", time: "2026-10-16 11:50" },
+];
+
+function StatIcon({ type }: { type: string }) {
+    if (type === "university") {
+        return (
+            <svg
+                width="34"
+                height="34"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1F6A8F"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <polyline points="3 9 12 3 21 9" />
+                <line x1="3" y1="9" x2="21" y2="9" />
+                <line x1="6" y1="12" x2="6" y2="17" />
+                <line x1="10" y1="12" x2="10" y2="17" />
+                <line x1="14" y1="12" x2="14" y2="17" />
+                <line x1="18" y1="12" x2="18" y2="17" />
+                <line x1="3" y1="20.5" x2="21" y2="20.5" />
+            </svg>
+        );
+    }
+
+    if (type === "medal") {
+        return (
+            <svg
+                width="34"
+                height="34"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#B7791F"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            >
+                <circle cx="12" cy="9" r="6.5" />
+                <polygon
+                    points="12 5.8 12.9 8 15.2 8.2 13.4 9.7 14 12 12 10.8 10 12 10.6 9.7 8.8 8.2 11.1 8 12 5.8"
+                    fill="#B7791F"
+                />
+                <path d="M8.5 14.5L7 22l5-3 5 3-1.5-7.5" />
+            </svg>
+        );
+    }
+
+    if (type === "verified") {
+        return (
+            <svg width="34" height="34" viewBox="0 0 24 24">
+                <path
+                    d="M12 1.5l2.6 1.9 3.2-.2 1 3.1 2.7 1.8-1 3.1 1 3.1-2.7 1.8-1 3.1-3.2-.2L12 22.5l-2.6-1.9-3.2.2-1-3.1-2.7-1.8 1-3.1-1-3.1 2.7-1.8 1-3.1 3.2.2L12 1.5z"
+                    fill="#2E8B57"
+                />
+                <polyline
+                    points="7.5 12 10.5 15 16.5 9"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+            </svg>
+        );
+    }
 
     return (
-        <div className="min-h-screen bg-[#F5F7FB] flex">
+        <svg width="34" height="34" viewBox="0 0 24 24">
+            <path
+                d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z"
+                fill="#8B4A62"
+            />
+            <circle cx="12" cy="10" r="2.4" fill="#fff" />
+            <path d="M7.8 15.5a4.2 3 0 0 1 8.4 0" fill="#fff" />
+        </svg>
+    );
+}
 
-            {/* SIDEBAR */}
-            <aside className="w-[280px] bg-[#071426] text-white min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-30">
+export default function SuperAdminDashboard() {
+    const [historyOpen, setHistoryOpen] = useState(false);
 
-                {/* LOGO */}
-                <div className="px-5 pt-5">
-                    <Link
-                        to="/superadmin"
-                        className="flex items-center gap-3"
-                    >
-                        <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-                            <img
-                                src="/logo.png"
-                                alt="CertiTrust logo"
-                                className="w-11 h-11 object-contain"
-                            />
-                        </div>
+    useEffect(() => {
+        if (!historyOpen) return;
+        const onKey = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setHistoryOpen(false);
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [historyOpen]);
 
-                        <div>
-                            <span className="block text-white font-extrabold text-lg">
-                                CertiTrust
-                            </span>
+    return (
+        <div className="flex min-h-screen bg-[#F5F7FB]">
 
-                            <span className="block text-white/40 text-[10px] font-bold uppercase tracking-[0.16em]">
-                                Super Admin
-                            </span>
+            <SuperAdminSideBar />
 
-                            <span className="block text-white/40 text-[10px] font-bold uppercase tracking-[0.16em]">
-                                Console
-                            </span>
-                        </div>
-                    </Link>
-                </div>
+            <main className="flex-1 min-w-0 h-screen overflow-y-auto p-6 md:p-10">
 
-                {/* DIVIDER */}
-                <div className="mx-5 mt-6 border-t border-white/10" />
+                <div className="max-w-5xl mx-auto">
 
-                {/* NAVIGATION */}
-                <nav className="flex-1 px-3.5 mt-6 overflow-y-auto">
-                    <div className="grid gap-2">
+                    {/* ACCOUNT BAR */}
+                    <div className="flex items-center justify-between gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 mb-8">
 
-                        {menuItems.map((item) => {
-                            const isActive =
-                                location.pathname === item.path;
-
-                            return (
-                                <Link
-                                    key={item.path}
-                                    to={item.path}
-                                    className={`group relative min-h-12 flex items-center gap-3 px-3.5 rounded-xl font-semibold transition-all duration-300 ${
-                                        isActive
-                                            ? "bg-white text-[#0A192F] shadow-[0_8px_20px_rgba(0,0,0,0.15)]"
-                                            : "text-white/60 hover:text-white hover:bg-white/[0.07]"
-                                    }`}
+                        <div className="flex items-center gap-3 min-w-0">
+                            <span className="text-gray-600 shrink-0">
+                                <svg
+                                    width="30"
+                                    height="30"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.8"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                 >
-
-                                    {/* ACTIVE INDICATOR */}
-                                    {isActive && (
-                                        <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-[#2563EB]" />
-                                    )}
-
-                                    {/* ICON */}
-                                    <span
-                                        className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold shrink-0 ${
-                                            isActive
-                                                ? "bg-[#EAF2FF] text-[#1D4ED8]"
-                                                : "bg-white/[0.05] text-white/50 group-hover:bg-white/10 group-hover:text-white"
-                                        }`}
-                                    >
-                                        {item.icon}
-                                    </span>
-
-                                    {/* LABEL */}
-                                    <span className="text-sm leading-5">
-                                        {item.name}
-                                    </span>
-
-                                </Link>
-                            );
-                        })}
-
-                    </div>
-                </nav>
-
-                {/* SYSTEM STATUS + LOGOUT */}
-                <div className="px-3.5 pb-5">
-
-                    {/* SYSTEM STATUS */}
-                    <div className="mb-3 p-3.5 rounded-xl bg-white/[0.05] border border-white/[0.08]">
-                        <div className="flex items-center gap-2.5">
-
-                            <span className="relative flex w-2.5 h-2.5">
-                                <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
-
-                                <span className="relative inline-flex w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                                    <circle cx="12" cy="12" r="10" />
+                                    <circle cx="12" cy="10" r="3" />
+                                    <path d="M6.2 18.5a6.5 5 0 0 1 11.6 0" />
+                                </svg>
                             </span>
 
-                            <div>
-                                <p className="text-xs font-bold text-white/80">
-                                    System Online
-                                </p>
+                            <span className="text-[#0A192F] font-medium truncate">
+                                certitrust256@gmail.com
+                            </span>
+                        </div>
 
-                                <p className="text-[10px] text-white/35 mt-0.5">
-                                    All services operational
-                                </p>
-                            </div>
+                        <div className="flex items-center gap-5 shrink-0">
+
+                            <span className="flex items-center gap-2 text-sm font-medium text-[#0A192F]">
+                                <span className="w-2.5 h-2.5 rounded-full bg-green-500" />
+                                Operational
+                            </span>
+
+                            <span className="text-gray-500 font-medium">
+                                Global scope
+                            </span>
 
                         </div>
+
                     </div>
 
-                    {/* LOGOUT */}
-                    <Link
-                        to="/login"
-                        className="group min-h-11 w-full flex items-center gap-3 px-3.5 rounded-xl text-white/55 hover:text-white hover:bg-red-500/10 border border-transparent transition-all"
-                    >
-                        <span className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/[0.05] group-hover:bg-red-500/10 group-hover:text-red-300">
-                            ↪
-                        </span>
+                    {/* HEADER */}
+                    <h1 className="text-3xl font-extrabold text-[#0A192F]">
+                        Super Admin Dashboard
+                    </h1>
 
-                        <span className="text-sm font-semibold">
-                            Logout
-                        </span>
-                    </Link>
+                    <p className="text-gray-500 mt-2 mb-8">
+                        Register subadmins and monitor global credential activity.
+                    </p>
 
-                </div>
+                    {/* STAT CARDS */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
-            </aside>
+                        {stats.map((s) => (
+                            <div
+                                key={s.label}
+                                className="bg-[#F3F5F9] rounded-3xl border border-gray-200 shadow-md p-6"
+                            >
+                                <StatIcon type={s.icon} />
 
-            {/* MAIN CONTENT */}
-            <main className="flex-1 ml-[280px] p-6 md:p-10">
-
-                {/* HEADER */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-8">
-
-                    <div>
-                        <h1 className="text-3xl font-extrabold text-[#0A192F]">
-                            Super Admin Dashboard
-                        </h1>
-
-                        <p className="text-gray-500 mt-1">
-                            Register subadmins and monitor global credential activity.
-                        </p>
-                    </div>
-
-                    {/* CREATE BUTTON */}
-                    <Link
-                        to="/superadmin/create-subadmin"
-                        className="inline-flex items-center justify-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white px-5 py-3 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition-all"
-                    >
-                        <span className="text-lg">
-                            +
-                        </span>
-
-                        Create Subadmin Account
-                    </Link>
-
-                </div>
-
-           {/* STAT CARDS */}
-<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
-
-    {/* TOTAL UNIVERSITIES */}
-    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div className="flex items-start justify-between">
-
-            <div>
-                <p className="text-sm text-gray-500 font-medium">
-                    Total Universities
-                </p>
-
-                <h2 className="text-3xl font-extrabold text-[#0A192F] mt-2">
-                    2
-                </h2>
-            </div>
-
-            <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
-                🏫
-            </div>
-
-        </div>
-    </div>
-
-
-    {/* TOTAL CREDENTIALS */}
-    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div className="flex items-start justify-between">
-
-            <div>
-                <p className="text-sm text-gray-500 font-medium">
-                    Total Credentials
-                </p>
-
-                <h2 className="text-3xl font-extrabold text-[#0A192F] mt-2">
-                    2
-                </h2>
-            </div>
-
-            <div className="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl">
-                📄
-            </div>
-
-        </div>
-    </div>
-
-
-    {/* VERIFIED CREDENTIALS */}
-    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div className="flex items-start justify-between">
-
-            <div>
-                <p className="text-sm text-gray-500 font-medium">
-                    Verified Credentials
-                </p>
-
-                <h2 className="text-3xl font-extrabold text-[#0A192F] mt-2">
-                    2
-                </h2>
-            </div>
-
-            <div className="w-11 h-11 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl">
-                ✓
-            </div>
-
-        </div>
-    </div>
-
-
-    {/* SUBADMIN ACCOUNTS */}
-    <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-        <div className="flex items-start justify-between">
-
-            <div>
-                <p className="text-sm text-gray-500 font-medium">
-                    Subadmin Accounts
-                </p>
-
-                <h2 className="text-3xl font-extrabold text-[#0A192F] mt-2">
-                    3
-                </h2>
-            </div>
-
-            <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl">
-                👤
-            </div>
-
-        </div>
-    </div>
-
-</div>
-                {/* LOWER CONTENT */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-
-                    {/* CREDENTIAL DELETION REQUESTS */}
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-
-                        <div className="flex items-center justify-between mb-5">
-                            <div>
-                                <h2 className="text-lg font-bold text-[#0A192F]">
-                                    Credential Deletion Requests
+                                <h2 className="text-4xl font-extrabold text-[#0A192F] mt-3">
+                                    {s.value}
                                 </h2>
 
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Requests submitted by university administrators.
+                                <p className="text-gray-600 font-medium mt-1">
+                                    {s.label}
                                 </p>
                             </div>
-
-                            <span className="px-3 py-1 rounded-full bg-red-50 text-red-600 text-xs font-bold">
-                                1 Pending
-                            </span>
-                        </div>
-
-                        <div className="border border-gray-100 rounded-xl p-4">
-
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
-                                <div>
-                                    <h3 className="font-bold text-[#0A192F]">
-                                        Credential CERT-002
-                                    </h3>
-
-                                    <p className="text-sm text-gray-500 mt-1">
-                                        Requested by UCU Subadmin
-                                    </p>
-                                </div>
-
-                                <button className="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition">
-                                    Review
-                                </button>
-
-                            </div>
-
-                        </div>
+                        ))}
 
                     </div>
 
-                    {/* ACTION HISTORY */}
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-
-                        <div className="mb-5">
-                            <h2 className="text-lg font-bold text-[#0A192F]">
-                                Action History
-                            </h2>
-
-                            <p className="text-sm text-gray-500 mt-1">
-                                Recent actions performed by administrators.
-                            </p>
-                        </div>
-
-                        <div className="space-y-4">
-
-                            <div className="flex gap-3">
-                                <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-                                    +
-                                </div>
-
-                                <div>
-                                    <p className="text-sm font-semibold text-[#0A192F]">
-                                        Credential issued
-                                    </p>
-
-                                    <p className="text-xs text-gray-400 mt-1">
-                                        CERT-001 • 10 minutes ago
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                                <div className="w-9 h-9 rounded-lg bg-green-50 text-green-600 flex items-center justify-center font-bold">
-                                    ✓
-                                </div>
-
-                                <div>
-                                    <p className="text-sm font-semibold text-[#0A192F]">
-                                        Credential verified
-                                    </p>
-
-                                    <p className="text-xs text-gray-400 mt-1">
-                                        CERT-002 • 25 minutes ago
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex gap-3">
-                                <div className="w-9 h-9 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
-                                    +
-                                </div>
-
-                                <div>
-                                    <p className="text-sm font-semibold text-[#0A192F]">
-                                        Subadmin account created
-                                    </p>
-
-                                    <p className="text-xs text-gray-400 mt-1">
-                                        UCU • 1 hour ago
-                                    </p>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                {/* GLOBAL CREDENTIAL LOGS */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mt-6">
-
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-
-                        <div>
-                            <h2 className="text-lg font-bold text-[#0A192F]">
-                                Global Credential Logs
-                            </h2>
-
-                            <p className="text-sm text-gray-500 mt-1">
-                                Monitor credential activity across all registered universities.
-                            </p>
-                        </div>
+                    {/* ACTION BUTTONS */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
 
                         <Link
-                            to="/superadmin/logs"
-                            className="text-sm font-bold text-[#2563EB] hover:text-[#1D4ED8]"
+                            to="/superadmin/create-subadmin"
+                            className="flex items-center justify-center gap-3 py-4 rounded-full bg-[#003366] hover:bg-[#002650] text-white text-lg font-semibold shadow-lg shadow-slate-400/40 transition-all"
                         >
-                            View All →
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="9" cy="8" r="4" />
+                                <path d="M2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1" />
+                                <line x1="19" y1="8" x2="19" y2="14" />
+                                <line x1="16" y1="11" x2="22" y2="11" />
+                            </svg>
+                            Create subadmin account
                         </Link>
+
+                        <Link
+                            to="/superadmin/freeze-access"
+                            className="flex items-center justify-center gap-3 py-4 rounded-full bg-transparent border-2 border-gray-400 hover:bg-white text-[#0A3A6B] text-lg font-semibold transition-all"
+                        >
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M3 12a9 9 0 1 0 3-6.7" />
+                                <polyline points="3 4 3 9 8 9" />
+                                <rect x="9" y="11" width="6" height="5" rx="1" />
+                                <path d="M10.5 11V9.5a1.5 1.5 0 0 1 3 0V11" />
+                            </svg>
+                            Freeze or unfreeze access
+                        </Link>
+
+                        <Link
+                            to="/superadmin/deletion-requests"
+                            className="flex items-center justify-center gap-3 py-4 rounded-full bg-transparent border-2 border-gray-400 hover:bg-white text-[#0A3A6B] text-lg font-semibold transition-all"
+                        >
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M9 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h4" />
+                                <rect x="8" y="2" width="6" height="4" rx="1" />
+                                <path d="M14 4h2a2 2 0 0 1 2 2v3" />
+                                <circle cx="17" cy="17" r="4.5" />
+                                <polyline points="17 14.5 17 17 18.8 18" />
+                            </svg>
+                            Credential deletion requests
+                        </Link>
+
+                        <button
+                            type="button"
+                            onClick={() => setHistoryOpen(true)}
+                            className="flex items-center justify-center gap-3 py-4 rounded-full bg-transparent border-2 border-gray-400 hover:bg-white text-[#0A3A6B] text-lg font-semibold transition-all"
+                        >
+                            <svg
+                                width="26"
+                                height="26"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="M3 12a9 9 0 1 0 3-6.7" />
+                                <polyline points="3 4 3 9 8 9" />
+                                <polyline points="12 7 12 12 15.5 14" />
+                            </svg>
+                            Action history
+                        </button>
 
                     </div>
 
-                    <div className="overflow-x-auto">
+                    {/* GLOBAL CREDENTIAL LOGS */}
+                    <h2 className="text-2xl font-bold text-[#0A192F] mb-5">
+                        Global Credential Logs
+                    </h2>
 
-                        <table className="w-full text-left">
+                    <div className="bg-[#F3F5F9] rounded-3xl border border-gray-200 shadow-md overflow-hidden">
 
-                            <thead>
-                                <tr className="border-b border-gray-100">
+                        <div className="overflow-x-auto">
 
-                                    <th className="pb-3 text-xs uppercase tracking-wide text-gray-400 font-bold">
-                                        Credential ID
-                                    </th>
+                            <table className="w-full text-left">
 
-                                    <th className="pb-3 text-xs uppercase tracking-wide text-gray-400 font-bold">
-                                        University
-                                    </th>
+                                <thead>
+                                    <tr className="border-b-2 border-gray-300">
+                                        <th className="px-7 py-6 text-lg font-bold text-[#0A192F]">
+                                            Credential
+                                        </th>
 
-                                    <th className="pb-3 text-xs uppercase tracking-wide text-gray-400 font-bold">
-                                        Action
-                                    </th>
+                                        <th className="px-7 py-6 text-lg font-bold text-[#0A192F]">
+                                            University
+                                        </th>
 
-                                    <th className="pb-3 text-xs uppercase tracking-wide text-gray-400 font-bold">
-                                        Status
-                                    </th>
+                                        <th className="px-7 py-6 text-lg font-bold text-[#0A192F]">
+                                            Date
+                                        </th>
+                                    </tr>
+                                </thead>
 
-                                    <th className="pb-3 text-xs uppercase tracking-wide text-gray-400 font-bold">
-                                        Date
-                                    </th>
+                                <tbody>
+                                    {logs.map((log, index) => (
+                                        <tr
+                                            key={log.credential}
+                                            className={`hover:bg-white/60 transition-colors ${index !== logs.length - 1
+                                                    ? "border-b border-gray-300"
+                                                    : ""
+                                                }`}
+                                        >
+                                            <td className="px-7 py-6 text-[#0A192F]">
+                                                {log.credential}
+                                            </td>
 
-                                </tr>
-                            </thead>
+                                            <td className="px-7 py-6 text-[#0A192F]">
+                                                {log.university}
+                                            </td>
 
-                            <tbody>
+                                            <td className="px-7 py-6 text-[#0A192F]">
+                                                {log.date}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
 
-                                <tr className="border-b border-gray-50">
+                            </table>
 
-                                    <td className="py-4 text-sm font-semibold text-[#0A192F]">
-                                        CERT-001
-                                    </td>
-
-                                    <td className="py-4 text-sm text-gray-600">
-                                        UCU
-                                    </td>
-
-                                    <td className="py-4 text-sm text-gray-600">
-                                        Issued
-                                    </td>
-
-                                    <td className="py-4">
-                                        <span className="px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold">
-                                            Active
-                                        </span>
-                                    </td>
-
-                                    <td className="py-4 text-sm text-gray-500">
-                                        Oct 3, 2026
-                                    </td>
-
-                                </tr>
-
-                                <tr>
-
-                                    <td className="py-4 text-sm font-semibold text-[#0A192F]">
-                                        CERT-002
-                                    </td>
-
-                                    <td className="py-4 text-sm text-gray-600">
-                                        UCU
-                                    </td>
-
-                                    <td className="py-4 text-sm text-gray-600">
-                                        Verified
-                                    </td>
-
-                                    <td className="py-4">
-                                        <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold">
-                                            Verified
-                                        </span>
-                                    </td>
-
-                                    <td className="py-4 text-sm text-gray-500">
-                                        Oct 3, 2026
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-                        </table>
+                        </div>
 
                     </div>
 
                 </div>
+
+                {/* ACTION HISTORY POPUP */}
+                {historyOpen && (
+                    <div
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                        role="dialog"
+                        aria-modal="true"
+                    >
+                        <div
+                            className="absolute inset-0 bg-black/50"
+                            onClick={() => setHistoryOpen(false)}
+                        />
+
+                        <div className="relative w-full max-w-md max-h-[90vh] flex flex-col bg-[#E9EBF1] rounded-3xl shadow-2xl p-8">
+
+                            <h2 className="text-3xl font-normal text-[#0A192F] leading-tight mb-6">
+                                Super Admin Action History
+                            </h2>
+
+                            <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+                                {actionHistory.map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className={`py-5 ${index !== actionHistory.length - 1
+                                                ? "border-b-2 border-gray-300"
+                                                : ""
+                                            }`}
+                                    >
+                                        <p className="text-xl text-[#0A192F]">
+                                            {item.action}
+                                        </p>
+
+                                        <p className="text-[15px] text-gray-600 mt-1">
+                                            {item.email} • {item.school}
+                                        </p>
+
+                                        <p className="text-[15px] text-gray-600">
+                                            {item.time}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="flex justify-end mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => setHistoryOpen(false)}
+                                    className="px-4 py-2 rounded-lg text-lg font-semibold text-[#0A3A6B] hover:bg-white/70 transition-colors"
+                                >
+                                    Close
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                )}
 
             </main>
 

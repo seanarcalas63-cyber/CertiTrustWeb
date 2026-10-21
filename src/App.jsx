@@ -29,6 +29,10 @@ import SuperAdminVerify from './pages/superadmin/SuperAdminVerify'
 import SuperAdminAsk from './pages/superadmin/SuperAdminAsk'
 import SuperAdminCreateSubadmin from './pages/superadmin/SuperAdminCreateSubadmin'
 import SuperAdminLogs from './pages/superadmin/SuperAdminLogs'
+import SuperAdminFreezeAccess from './pages/superadmin/SuperAdminFreezeAccess'
+import SuperAdminStudentAccess from './pages/superadmin/SuperAdminStudentAccess'
+import SuperAdminDeletionRequests from './pages/superadmin/SuperAdminDeletionRequests'
+import SuperAdminChat from './pages/superadmin/SuperAdminChat'
 
 function App() {
     return (
@@ -44,6 +48,10 @@ function App() {
             <Route path="/superadmin/ask" element={<SuperAdminAsk />} />
             <Route path="/superadmin/create-subadmin" element={<SuperAdminCreateSubadmin />} />
             <Route path="/superadmin/logs" element={<SuperAdminLogs />} />
+            <Route path="/superadmin/freeze-access" element={<SuperAdminFreezeAccess />} />
+            <Route path="/superadmin/freeze-access/:code" element={<SuperAdminStudentAccess />} />
+            <Route path="/superadmin/deletion-requests" element={<SuperAdminDeletionRequests />} />
+            <Route path="/superadmin/ask/:id" element={<SuperAdminChat />} />
 
             {/* Admin */}
             <Route path="/admin-dashboard" element={<Dashboard />} />

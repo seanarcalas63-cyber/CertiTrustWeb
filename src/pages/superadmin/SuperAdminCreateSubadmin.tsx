@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SuperAdminSideBar from "../../components/SuperAdminSideBar";
 
 type Subadmin = {
@@ -87,6 +88,9 @@ export default function SuperAdminCreateSubadmin() {
     const [shortCode, setShortCode] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [subadmins, setSubadmins] = useState<Subadmin[]>(initialSubadmins);
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+    const navigate = useNavigate();
+    const [editingId, setEditingId] = useState<string | null>(null);
 
     const handleCreate = () => {
         const next: Record<string, string> = {};
@@ -105,24 +109,85 @@ export default function SuperAdminCreateSubadmin() {
 
         if (Object.keys(next).length > 0) return;
 
-        // TODO: connect to your API to create the administrator account
-        setSubadmins((prev) => [
-            ...prev,
-            {
-                id: String(Date.now()),
-                code: shortCode.trim().toUpperCase(),
-                email: email.trim(),
-                university: university.trim(),
-                access: "Active",
-                frozen: "None",
-            },
-        ]);
+        // TODO: connect to your API to create / update the administrator account
+        if (editingId) {
+            setSubadmins((prev) =>
+                prev.map((item) =>
+                    item.id === editingId
+                        ? {
+                            ...item,
+                            code: shortCode.trim().toUpperCase(),
+                            email: email.trim(),
+                            university: university.trim(),
+                        }
+                        : item
+                )
+            );
+        } else {
+            setSubadmins((prev) => [
+                ...prev,
+                {
+                    id: String(Date.now()),
+                    code: shortCode.trim().toUpperCase(),
+                    email: email.trim(),
+                    university: university.trim(),
+                    access: "Active",
+                    frozen: "None",
+                },
+            ]);
+        }
 
         setDisplayName("");
         setEmail("");
         setUniversity("");
         setBranch("");
         setShortCode("");
+        setEditingId(null);
+    };
+
+    const startEdit = (item: Subadmin) => {
+        setDisplayName(item.code);
+        setEmail(item.email);
+        setUniversity(item.university);
+        setBranch("");
+        setShortCode(item.code);
+        setErrors({});
+        setEditingId(item.id);
+        setOpenMenuId(null);
+        document
+            .getElementById("subadmin-form")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    const setAccess = (id: string, access: string) => {
+        // TODO: connect to your API to freeze / restore access
+        setSubadmins((prev) =>
+            prev.map((item) => (item.id === id ? { ...item, access } : item))
+        );
+        setOpenMenuId(null);
+    };
+
+    const changeGoogle = (item: Subadmin) => {
+        setOpenMenuId(null);
+        const next = window.prompt("New Google account email", item.email);
+        if (next === null) return;
+        const value = next.trim();
+        if (!/^\S+@\S+\.\S+$/.test(value)) {
+            window.alert("Invalid email");
+            return;
+        }
+        // TODO: connect to your API to change the Google account
+        setSubadmins((prev) =>
+            prev.map((x) => (x.id === item.id ? { ...x, email: value } : x))
+        );
+    };
+
+    const removeSubadmin = (item: Subadmin) => {
+        setOpenMenuId(null);
+        if (!window.confirm(`Delete the ${item.code} subadmin account?`)) return;
+        // TODO: connect to your API to delete the account
+        setSubadmins((prev) => prev.filter((x) => x.id !== item.id));
+        if (editingId === item.id) setEditingId(null);
     };
 
     return (
@@ -144,7 +209,7 @@ export default function SuperAdminCreateSubadmin() {
                     </p>
 
                     {/* FORM */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
+                    <div id="subadmin-form" className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -209,7 +274,7 @@ export default function SuperAdminCreateSubadmin() {
                                 <line x1="19" y1="8" x2="19" y2="14" />
                                 <line x1="16" y1="11" x2="22" y2="11" />
                             </svg>
-                            Create administrator account
+                            {editingId ? "Save changes" : "Create administrator account"}
                         </button>
 
                     </div>
@@ -224,7 +289,14 @@ export default function SuperAdminCreateSubadmin() {
                         {subadmins.map((s) => (
                             <div
                                 key={s.id}
-                                className="flex items-center gap-6 bg-[#F3F5F9] rounded-2xl border border-gray-200 shadow-md px-7 py-6 hover:shadow-lg transition-shadow"
+                                role="link"
+                                tabIndex={0}
+                                onClick={() => navigate(`/superadmin/freeze-access/${s.code}`)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter")
+                                        navigate(`/superadmin/freeze-access/${s.code}`);
+                                }}
+                                className="flex items-center gap-6 bg-[#F3F5F9] rounded-2xl border border-gray-200 shadow-md px-7 py-6 hover:shadow-lg hover:bg-[#EDF0F6] cursor-pointer transition-all"
                             >
 
                                 {/* ICON */}
@@ -264,7 +336,10 @@ export default function SuperAdminCreateSubadmin() {
                                         University: {s.university}
                                     </p>
 
-                                    <p className="text-[15px] font-semibold text-[#2E9E45] mt-1">
+                                    <p
+                                        className={`text-[15px] font-semibold mt-1 ${s.access === "Active" ? "text-[#2E9E45]" : "text-red-600"
+                                            }`}
+                                    >
                                         Subadmin access: {s.access}
                                     </p>
 
@@ -288,23 +363,69 @@ export default function SuperAdminCreateSubadmin() {
                                 </div>
 
                                 {/* MENU */}
-                                <button
-                                    type="button"
-                                    aria-label="More options"
-                                    className="p-2 rounded-lg text-gray-700 hover:bg-gray-200/70 transition-colors shrink-0"
+                                <div
+                                    className="relative shrink-0"
+                                    onClick={(e) => e.stopPropagation()}
+                                    onKeyDown={(e) => e.stopPropagation()}
                                 >
-                                    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-                                        <circle cx="12" cy="5" r="2" />
-                                        <circle cx="12" cy="12" r="2" />
-                                        <circle cx="12" cy="19" r="2" />
-                                    </svg>
-                                </button>
+
+                                    <button
+                                        type="button"
+                                        aria-label="More options"
+                                        aria-haspopup="menu"
+                                        aria-expanded={openMenuId === s.id}
+                                        onClick={() =>
+                                            setOpenMenuId(openMenuId === s.id ? null : s.id)
+                                        }
+                                        className="p-2 rounded-lg text-gray-700 hover:bg-gray-200/70 transition-colors"
+                                    >
+                                        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+                                            <circle cx="12" cy="5" r="2" />
+                                            <circle cx="12" cy="12" r="2" />
+                                            <circle cx="12" cy="19" r="2" />
+                                        </svg>
+                                    </button>
+
+                                    {openMenuId === s.id && (
+                                        <>
+                                            <div
+                                                className="fixed inset-0 z-10"
+                                                onClick={() => setOpenMenuId(null)}
+                                            />
+
+                                            <div
+                                                role="menu"
+                                                className="absolute right-0 top-full mt-1 z-20 w-72 bg-[#EEF0F5] rounded-xl shadow-xl py-2"
+                                            >
+                                                <button type="button" role="menuitem" onClick={() => startEdit(s)} className="w-full text-left px-5 py-4 text-lg font-medium text-[#0A192F] hover:bg-white/60 transition-colors">
+                                                    Edit
+                                                </button>
+
+                                                <button type="button" role="menuitem" onClick={() => setAccess(s.id, "Frozen")} className="w-full text-left px-5 py-4 text-lg font-medium text-[#0A192F] hover:bg-white/60 transition-colors">
+                                                    Freeze access for {s.code}
+                                                </button>
+
+                                                <button type="button" role="menuitem" onClick={() => setAccess(s.id, "Active")} className="w-full text-left px-5 py-4 text-lg font-medium text-[#0A192F] hover:bg-white/60 transition-colors">
+                                                    Restore access for {s.code}
+                                                </button>
+
+                                                <button type="button" role="menuitem" onClick={() => changeGoogle(s)} className="w-full text-left px-5 py-4 text-lg font-medium text-[#0A192F] hover:bg-white/60 transition-colors">
+                                                    Change Google account
+                                                </button>
+
+                                                <button type="button" role="menuitem" onClick={() => removeSubadmin(s)} className="w-full text-left px-5 py-4 text-lg font-medium text-[#0A192F] hover:bg-white/60 transition-colors">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+
+                                </div>
 
                                 {/* CHEVRON */}
-                                <button
-                                    type="button"
-                                    aria-label="Open details"
-                                    className="p-2 rounded-lg text-gray-700 hover:bg-gray-200/70 transition-colors shrink-0"
+                                <span
+                                    aria-hidden="true"
+                                    className="p-2 text-gray-700 shrink-0"
                                 >
                                     <svg
                                         width="26"
@@ -318,7 +439,7 @@ export default function SuperAdminCreateSubadmin() {
                                     >
                                         <polyline points="9 6 15 12 9 18" />
                                     </svg>
-                                </button>
+                                </span>
 
                             </div>
                         ))}

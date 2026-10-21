@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SuperAdminSideBar from "../../components/SuperAdminSideBar";
 
 type Conversation = {
@@ -53,6 +54,7 @@ const conversations: Conversation[] = [
 
 export default function SuperAdminAsk() {
     const [search, setSearch] = useState("");
+    const navigate = useNavigate();
 
     const filtered = useMemo(() => {
         const q = search.trim().toLowerCase();
@@ -116,9 +118,15 @@ export default function SuperAdminAsk() {
                         {filtered.map((c, index) => (
                             <div
                                 key={c.id}
+                                role="link"
+                                tabIndex={0}
+                                onClick={() => navigate(`/superadmin/ask/${c.id}`)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") navigate(`/superadmin/ask/${c.id}`);
+                                }}
                                 className={`flex items-center gap-5 px-6 py-6 hover:bg-gray-50 transition-colors cursor-pointer ${index !== filtered.length - 1
-                                        ? "border-b border-gray-200"
-                                        : ""
+                                    ? "border-b border-gray-200"
+                                    : ""
                                     }`}
                             >
 
@@ -179,8 +187,8 @@ export default function SuperAdminAsk() {
 
                                     <p
                                         className={`text-[15px] truncate ${c.unread
-                                                ? "font-bold text-[#0A192F]"
-                                                : "text-gray-400"
+                                            ? "font-bold text-[#0A192F]"
+                                            : "text-gray-400"
                                             }`}
                                     >
                                         {c.preview}
@@ -203,6 +211,8 @@ export default function SuperAdminAsk() {
                                 <button
                                     type="button"
                                     aria-label="More options"
+                                    onClick={(e) => e.stopPropagation()}
+                                    onKeyDown={(e) => e.stopPropagation()}
                                     className="p-2 rounded-lg text-gray-600 hover:bg-gray-200/70 transition-colors shrink-0"
                                 >
                                     <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
