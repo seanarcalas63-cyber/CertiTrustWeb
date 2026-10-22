@@ -1,322 +1,188 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Sidebar from "../../components/Sidebar";
 
 export default function Verification() {
-    const [isVerified, setIsVerified] = useState(false);
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
 
-    const record = {
-        studentName: "Johny Hey Daddy",
-        studentId: "1999",
-        program: "BS Computer Science",
-        institution: "UCU",
-        issueDate: "Oct 25, 2013",
-        network: "Polygon",
-        hash: "111-2221-2",
-    };
+  const handleVerify = () => {
+    const value = code.trim();
 
-    function handleVerify() {
-        setIsVerified(true);
+    if (value === "") {
+      setError("Please enter a certificate code.");
+      return;
     }
 
-    return (
-        <>
-            <div className="min-h-screen bg-[#F6F8FC]">
+    setError("");
 
-                {/* Header */}
-                <header className="w-[min(1180px,calc(100%-32px))] mx-auto py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+    // TODO: connect to your verification API / blockchain lookup here
+    console.log("Verify certificate code:", value);
+  };
 
-                    {/* Logo */}
-                    <a
-                        href="/"
-                        className="flex items-center gap-3 text-[#0A192F] font-extrabold text-lg"
-                    >
-                        <img
-                            src="/logo.png"
-                            alt="CertiTrust logo"
-                            className="w-11 h-11 object-contain border border-slate-200 rounded-lg bg-white"
-                        />
+  return (
+    <div className="min-h-screen flex bg-[#F5F8FC]">
 
-                        <span className="text-xl">
-                            CertiTrust
-                        </span>
-                    </a>
+      <Sidebar />
 
-                    {/* Navigation */}
-                    <nav
-                        aria-label="Public navigation"
-                        className="flex items-center gap-3.5 text-slate-500 font-bold"
-                    >
-                        <Link
-                            to="/admin-dashboard"
-                            className="hover:text-[#1D4ED8] transition"
-                        >
-                            Admin Dashboard
-                        </Link>
+      {/* MAIN CONTENT */}
+      <main className="min-w-0 mx-auto overflow-y-auto h-screen p-8">
 
-                        <a
-                            href="/login"
-                            className="inline-flex items-center justify-center whitespace-nowrap min-h-[38px] px-4.5 rounded-lg border border-slate-200 font-bold bg-white text-[#0A192F] hover:-translate-y-px hover:shadow-[0_12px_22px_rgba(15,23,42,0.1)] transition"
-                        >
-                            Sign In
-                        </a>
-                    </nav>
-                </header>
+        {/* HEADER */}
+        <div className="mb-8">
 
-                {/* Main */}
-                <main className="w-[min(1080px,calc(100%-32px))] mx-auto py-12 md:py-20">
+          <h1 className="text-3xl font-extrabold text-[#0A192F]">
+            Certificate Verification
+          </h1>
 
-                    {/* Title */}
-                    <section className="max-w-[700px] mx-auto mb-8 text-center">
+          <p className="text-gray-500 mt-2">
+            Verify academic credentials across registered universities.
+          </p>
 
-                        <span className="text-[#1D4ED8] font-extrabold text-xs uppercase tracking-wider">
-                            CERTITRUST
-                        </span>
+        </div>
 
-                        <h1 className="mt-3 mb-3 text-[#0A192F] text-[clamp(2rem,5vw,3.5rem)] leading-tight font-extrabold">
-                            Verify Official UCU Academic Credential
-                        </h1>
+        <div className="max-w-2xl">
 
-                        <p className="m-0 text-slate-500 text-base md:text-lg leading-relaxed">
-                            Verify an official UCU academic credential
-                            anchored on the Polygon blockchain.
-                        </p>
+          {/* INFO BANNER */}
+          <div className="flex items-center gap-6 bg-[#EAEFF7] border border-[#C9D5E6] rounded-3xl px-8 py-7 mb-10">
 
-                    </section>
+            <span className="text-[#0A3A6B] shrink-0">
+              <svg
+                width="44"
+                height="44"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect
+                  x="11"
+                  y="3"
+                  width="10"
+                  height="5"
+                  rx="1"
+                  transform="rotate(45 16 5.5)"
+                />
+                <line x1="13" y1="11" x2="4" y2="20" />
+                <line x1="3" y1="21.5" x2="11" y2="21.5" />
+              </svg>
+            </span>
 
-                    {/* Verification Card */}
-                    <section className="max-w-[620px] mx-auto">
+            <p className="text-lg font-semibold text-[#0A192F] leading-8">
+              Verify official academic credentials anchored on the Polygon
+              blockchain.
+            </p>
 
-                        <article className="bg-white border border-slate-200 rounded-2xl shadow-[0_24px_60px_rgba(10,25,47,0.10)] overflow-hidden">
+          </div>
 
-                            {/* Card Top */}
-                            <div className="h-2 bg-[#1D4ED8]"></div>
+          {/* CODE FIELD */}
+          <div className="relative">
 
-                            <div className="p-6 md:p-8">
+            <label
+              htmlFor="certificate-code"
+              className="absolute -top-3 left-4 px-2 bg-[#F5F8FC] text-sm font-medium text-[#0A3A6B]"
+            >
+              Certificate or shared-degree code
+            </label>
 
-                                {/* Icon */}
-                                <div className="flex justify-center mb-5">
+            <div
+              className={`flex items-center gap-3 bg-transparent rounded-xl border-2 px-5 py-4 transition-colors ${error ? "border-red-500" : "border-[#0A3A6B]"
+                }`}
+            >
 
-                                    <div className="w-16 h-16 rounded-2xl bg-[#EAF2FF] flex items-center justify-center text-[#1D4ED8]">
+              <input
+                id="certificate-code"
+                type="text"
+                value={code}
+                onChange={(e) => {
+                  setCode(e.target.value);
+                  if (error) setError("");
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleVerify();
+                }}
+                placeholder="Enter a certificate code ..."
+                className="flex-1 min-w-0 bg-transparent outline-none text-lg text-[#0A192F] placeholder-gray-500"
+              />
 
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="1.8"
-                                            className="w-8 h-8"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M9 12.75 11 15l4-5"
-                                            />
+              {/* SCAN */}
+              <button
+                type="button"
+                aria-label="Scan QR code"
+                className="p-2 rounded-lg text-[#333F4F] hover:bg-gray-200/70 transition-colors"
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="13" r="3.5" fill="#F5F8FC" stroke="#F5F8FC" />
+                </svg>
+              </button>
 
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M12 3.75 5.25 6.5v5.25c0 4.4 2.8 7.65 6.75 8.5 3.95-.85 6.75-4.1 6.75-8.5V6.5L12 3.75Z"
-                                            />
-                                        </svg>
-
-                                    </div>
-
-                                </div>
-
-                                {/* Card Title */}
-                                <div className="text-center mb-6">
-
-                                    <h2 className="m-0 text-[#0A192F] text-xl md:text-2xl font-extrabold">
-                                        Verify Academic Credential
-                                    </h2>
-
-                                    <p className="mt-2 mb-0 text-sm text-slate-500">
-                                        Enter the Certificate Hash below to verify
-                                        the authenticity of the record.
-                                    </p>
-
-                                </div>
-
-                                {/* Certificate Hash */}
-                                <label
-                                    htmlFor="certificateCode"
-                                    className="grid gap-2 text-[#172033] font-bold text-sm"
-                                >
-                                    Certificate Hash
-
-                                    <input
-                                        id="certificateCode"
-                                        type="text"
-                                        defaultValue="111-2221-2"
-                                        placeholder="Enter Certificate Hash"
-                                        className="w-full min-h-[52px] border border-slate-200 rounded-xl bg-[#FAFBFD] px-4 py-3 text-center text-[#0A192F] font-bold tracking-wide outline-none transition focus:bg-white focus:border-[#1D4ED8] focus:ring-4 focus:ring-[#1D4ED8]/10"
-                                    />
-                                </label>
-
-                                {/* Verify Button */}
-                                <button
-                                    type="button"
-                                    id="verifyCertificate"
-                                    onClick={handleVerify}
-                                    className="w-full mt-5 min-h-[48px] rounded-xl border border-transparent font-bold bg-[#0A192F] text-white shadow-[0_10px_20px_rgba(10,25,47,0.16)] hover:bg-[#122A4A] hover:-translate-y-0.5 hover:shadow-[0_14px_25px_rgba(10,25,47,0.18)] transition"
-                                >
-                                    Verify Record
-                                </button>
-
-                                {/* Blockchain Info */}
-                                <div className="mt-6 pt-5 border-t border-slate-100">
-
-                                    <div className="flex items-center justify-center gap-2 text-xs text-slate-400 font-medium">
-
-                                        <span className="w-2 h-2 rounded-full bg-[#22C55E]"></span>
-
-                                        <span>
-                                            Secured and anchored on the Polygon blockchain
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    </section>
-
-                    {/* Bottom Information */}
-                    <section className="max-w-[620px] mx-auto mt-5">
-
-                        <div className="p-4 rounded-xl border border-[#BFDBFE] bg-[#EFF6FF] text-center">
-
-                            <p className="m-0 text-sm text-[#1E40AF]">
-                                Enter a valid Certificate Hash to verify
-                                an official University of Urdaneta academic credential.
-                            </p>
-
-                        </div>
-
-                    </section>
-
-                </main>
-
-                {/* Toast */}
-                <div
-                    id="toast"
-                    role="status"
-                    aria-live="polite"
-                    className="fixed right-4 bottom-4 z-50 translate-y-6 opacity-0 pointer-events-none max-w-[min(380px,calc(100%-36px))] px-4 py-3.5 rounded-xl bg-[#0A192F] text-white shadow-[0_18px_44px_rgba(10,25,47,0.12)] transition-all duration-200 [&.show]:opacity-100 [&.show]:translate-y-0"
-                ></div>
-
-                {isVerified && (
-                    <div
-                        className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-[#0A192F]/40 backdrop-blur-[2px]"
-                        onClick={() => setIsVerified(false)}
-                    >
-                        <div
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-full max-w-[700px] hide-scrollbar max-h-[85vh] overflow-y-auto bg-white rounded-2xl shadow-[0_30px_70px_rgba(10,25,47,0.25)]"
-                        >
-                            {/* Top bar */}
-                            <div className="h-1.5 bg-[#16A34A] rounded-t-2xl"></div>
-
-                            <div className="p-5">
-
-                                {/* Close */}
-                                <div className="flex justify-end -mt-1 -mr-1 mb-1">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsVerified(false)}
-                                        aria-label="Close"
-                                        className="w-7 h-7 flex items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="w-4 h-4">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                {/* Status */}
-                                <div className="flex flex-col items-center text-center mb-4">
-                                    <div className="w-11 h-11 rounded-full bg-[#DCFCE7] flex items-center justify-center text-[#16A34A] mb-2.5">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-5 h-5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4L19 7" />
-                                        </svg>
-                                    </div>
-
-                                    <h2 className="m-0 text-[#0A192F] text-base font-extrabold">
-                                        Legitimate Credential
-                                    </h2>
-                                    <p className="mt-1 mb-0 text-xs text-slate-500">
-                                        UCU &middot; CertiTrust
-                                    </p>
-                                </div>
-
-                                {/* Fields */}
-                                <dl className="grid gap-2 text-sm">
-
-                                    <div className="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100">
-                                        <dt className="text-slate-500 font-semibold">Student</dt>
-                                        <dd className="m-0 font-bold text-[#0A192F] text-right truncate">{record.studentName}</dd>
-                                    </div>
-
-                                    <div className="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100">
-                                        <dt className="text-slate-500 font-semibold">Student ID</dt>
-                                        <dd className="m-0 font-bold text-[#0A192F] text-right">{record.studentId}</dd>
-                                    </div>
-
-                                    <div className="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100">
-                                        <dt className="text-slate-500 font-semibold">Program</dt>
-                                        <dd className="m-0 font-bold text-[#0A192F] text-right truncate">{record.program}</dd>
-                                    </div>
-
-                                    <div className="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100">
-                                        <dt className="text-slate-500 font-semibold">Institution</dt>
-                                        <dd className="m-0 font-bold text-[#0A192F] text-right">{record.institution}</dd>
-                                    </div>
-
-                                    <div className="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100">
-                                        <dt className="text-slate-500 font-semibold">Issue date</dt>
-                                        <dd className="m-0 font-bold text-[#0A192F] text-right">{record.issueDate}</dd>
-                                    </div>
-
-                                    <div className="flex items-center justify-between gap-3 py-1.5 border-b border-slate-100">
-                                        <dt className="text-slate-500 font-semibold">Anchor</dt>
-                                        <dd className="m-0 font-bold text-[#0A192F] text-right">{record.network}</dd>
-                                    </div>
-
-                                    <div className="flex items-center justify-between gap-3 py-1.5">
-                                        <dt className="text-slate-500 font-semibold">Hash</dt>
-                                        <dd className="m-0 font-bold text-[#0A192F] text-right truncate">{record.hash}</dd>
-                                    </div>
-
-                                </dl>
-
-                                {/* Status pill */}
-                                <div className="mt-3 flex items-center justify-between gap-2 rounded-lg bg-[#F0FDF4] border border-[#BBF7D0] px-3 py-2.5">
-                                    <span className="flex items-center gap-1.5 text-xs font-bold text-[#166534]">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]"></span>
-                                        Verified on ledger
-                                    </span>
-                                    <span className="text-[10px] font-extrabold uppercase tracking-wide text-[#16A34A]">
-                                        Confirmed
-                                    </span>
-                                </div>
-
-                                <button
-                                    type="button"
-                                    onClick={() => setIsVerified(false)}
-                                    className="w-full mt-4 min-h-[40px] rounded-lg border border-transparent font-bold text-sm bg-[#0A192F] text-white hover:bg-[#122A4A] transition"
-                                >
-                                    Done
-                                </button>
-
-                            </div>
-                        </div>
-                    </div>
-                )}
+              {/* SEARCH */}
+              <button
+                type="button"
+                aria-label="Search"
+                onClick={handleVerify}
+                className="p-2 rounded-lg text-[#333F4F] hover:bg-gray-200/70 transition-colors"
+              >
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="7" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </button>
 
             </div>
-        </>
-    );
+
+            {error && (
+              <p className="text-sm text-red-600 mt-2 ml-1">{error}</p>
+            )}
+
+          </div>
+
+          {/* VERIFY BUTTON */}
+          <button
+            type="button"
+            onClick={handleVerify}
+            className="mt-6 w-full flex items-center justify-center gap-3 py-5 rounded-full bg-[#1B4A75] hover:bg-[#143A5E] text-white text-lg font-semibold shadow-lg shadow-slate-400/40 transition-all duration-300"
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="8 12 11 15 16 9" />
+            </svg>
+            Verify Record
+          </button>
+
+        </div>
+
+      </main>
+
+    </div>
+  );
 }

@@ -70,19 +70,18 @@ export default function StudentPortal() {
     const [attemptedId, setAttemptedId] = useState("");
     const [qrRecord, setQrRecord] = useState<CredentialRecord | null>(null);
     const [toast, setToast] = useState<Toast>(null);
-
     const navigate = useNavigate();
     const user = useUserVerification();
-
-    const record = useMemo(
-        () => STUDENT_DB[user.studentId],
-        [user.studentId]
-    );
 
     const showToast = (message: string) => {
         setToast({ message });
         window.setTimeout(() => setToast(null), 2600);
     };
+
+    const record = useMemo(
+        () => STUDENT_DB[user.studentId],
+        [user.studentId]
+    );
 
     const getVerificationUrl = (credential: CredentialRecord) => {
         return `${window.location.origin}/certificate-verification?studentId=${encodeURIComponent(

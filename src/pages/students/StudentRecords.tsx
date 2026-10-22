@@ -6,7 +6,6 @@ import StudentSidebar from "../../components/StudentSidebar";
 export default function StudentRecords() {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
-
     const record = {
         studentName: "UcuUser T. Student",
         studentId: "20260001",
@@ -35,6 +34,7 @@ export default function StudentRecords() {
     );
 
     const handleVerify = () => {
+        if (!record) return;
         navigate(
             `/certificate-verification?studentId=${encodeURIComponent(
                 record.studentId
@@ -237,6 +237,7 @@ export default function StudentRecords() {
                     </p>
                 </div>
             </main>
+
         </div>
     );
 }
