@@ -8,7 +8,6 @@ export default function Sidebar() {
         { name: "Academic Records", path: "/records", icon: "▤" },
         { name: "Inbox", path: "/inbox", icon: "todo" },
         { name: "Certificates", path: "/certificates", icon: "▣" },
-        { name: "Students", path: "/students", icon: "♙" },
         { name: "Verification", path: "/verification", icon: "✓" },
         { name: "Notifications", path: "/notifications", icon: "♢" },
         { name: "Profile", path: "/profile", icon: "○" },

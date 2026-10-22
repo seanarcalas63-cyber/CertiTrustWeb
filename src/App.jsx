@@ -3,7 +3,6 @@ import './App.css'
 import { Routes, Route } from 'react-router-dom'
 
 // Admin pages
-import Students from './pages/admin/students'
 import Inbox from './pages/admin/inbox'
 import Dashboard from './pages/admin/dashboard'
 import Certificates from './pages/admin/certificates'
@@ -56,7 +55,6 @@ function App() {
             {/* Admin */}
             <Route path="/admin-dashboard" element={<Dashboard />} />
             <Route path="/chat" element={<AskQ />} />
-            <Route path="/students" element={<Students />} />
             <Route path="/certificates" element={<Certificates />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/notifications" element={<Notifications />} />
